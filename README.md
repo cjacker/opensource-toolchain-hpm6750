@@ -8,8 +8,7 @@ The whole series of HPM6000 MCUs, including dual-core HPM6750, single-core HPM64
 
 In short, up to now, hpm6750 (816 MHz Dual Core) is **the most powerful real-time RISC-V mcu in the world**.
 
-
-
+<img src="https://github.com/cjacker/opensource-toolchain-hpm6750/raw/main/evkmini.jpg" />
 
 # Hardware prerequiest
 - hpm6750evk / hpm6750evkmini board
