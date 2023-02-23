@@ -75,20 +75,23 @@ For example, for bash:
 If you do not use bash, please setup these 2 variables according to your shell.
 
 ## Build rgb_led sample:
+
 After all setup, enter 'samples/rgb_led' dir:
 
 ```
 mkdir build
 cd build
-cmake .. -DBOARD=hpm6750evkmini -DCMAKE_BUILD_TYPE=flash_xip
+cmake .. -DBOARD=hpm6750evkmini -DCMAKE_BUILD_TYPE=debug
 make
 ```
 
-As mentioned above, hpm6750 do not have on-chip flash, but evkmini board has 8M external flash and 16m dram integrated on board. 'hpm_sdk' use `-DCMAKE_BUILD_TYPE` to use these resources. 
+As mentioned above, hpm6750 do not have on-chip flash, but evkmini board has 8M external flash and 16m dram integrated on board. 'hpm_sdk' use `-DCMAKE_BUILD_TYPE=` to use these resources and build code in 'debug' or 'release' mode. please refer to below table for more `CMAKE_BUILD_TYPE`:
 
-- without `-DCMAKE_BUILD_TYPE`, code will load to internal ram
-- with `-DCMAKE_BUILD_TYPE=flash_xip`, code will be load to 8M flash
-- with `-DCMAKE_BUILD_TYPE=flash_sdram_xip`, it is suitable for code need to allocate large memory space, such as deal with 'framebuffer'.
+| Debug build     | Release build           | Code        | RAM          |
+|-----------------|-------------------------|-------------|--------------|
+| debug           | release                 | on-chip RAM | on-chip RAM  |
+| flash_xip       | flash_xip_release       | ex 8M FLASH | on-chip RAM  |
+| flash_sdram_xip | flash_sdram_xip_release | ex 8M FLASH | ex 16M SDRAM |
 
 **NOTE 1 :** If you use hpm6750evk board, change the '-DBOARD=hpm6750evkmini' to '-DBOARD=hpm6750evk'.
 
@@ -142,7 +145,9 @@ Warn : Adding extra erase range, 0x8000fe48 .. 0x8000ffff
 
 # Debugging
 
-It is very slow to load code into flash for debugging. please rebuild rgb_led sample without `-DCMAKE_BUILD_TYPE` and let code load into ram.
+For Debugging, you should build codes in 'debug' mode and load it into internal RAM, it is very slow to load code into flash for debugging. 
+
+please rebuild rgb_led sample with `-DCMAKE_BUILD_TYPE=debug`.
 
 ## Re-build rgb_led sample:
 Enter 'samples/rgb_led' dir:
@@ -151,12 +156,14 @@ Enter 'samples/rgb_led' dir:
 rm -rf build
 mkdir build
 cd build
-cmake .. -DBOARD=hpm6750evkmini
+cmake .. -DBOARD=hpm6750evkmini -DCMAKE_BUILD_TYPE=debug
 make
 ```
+
 After build successfully, the target file 'demo.elf' will be generated in 'output' dir.
 
 ## Launch hpm-openocd
+
 For single core debugging:
 ```
  hpm-openocd -f $HPM_SDK_BASE/boards/openocd/probes/ft2232.cfg \
@@ -185,11 +192,15 @@ Info : Listening on port 3334 for gdb connections
 ```
 
 ## Debugging with gdb
+
 Start another terminal window, run:
+
 ```
 riscv-none-elf-gdb output/demo.elf
 ```
+
 And input below commands after `(gdb)` promt show up:
+
 
 ```
 (gdb) target remote :3333
@@ -211,3 +222,6 @@ Breakpoint 1, main () at /home/cjacker/hpm_sdk-1.0.0/samples/rgb_led/src/rgb_led
 190         board_init();
 (gdb)
 ```
+
+If you want to debug with 2nd core, use `target remote :3334` to connect to 2nd core.
+
