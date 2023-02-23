@@ -1,4 +1,4 @@
-# opensource toolchain for hpm6750 from HPMicro Semiconductor
+# Opensource toolchain for hpm6750 from HPMicro Semiconductor
 
 HPMicro Semiconductor is a leading manufacturer of high-performance embedded solutions, and Andes Technology, a leading supplier of 32/64-bit RISC-V embedded processors.
 
