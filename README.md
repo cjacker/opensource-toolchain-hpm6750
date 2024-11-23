@@ -26,11 +26,11 @@ In short, up to now, hpm6750 (816 MHz Dual Core) is **the most powerful real-tim
 
 # RISC-V GNU Toolchain
 
-[xpack-dev-tools](https://github.com/xpack-dev-tools/riscv-none-elf-gcc-xpack/) provde a prebuilt toolchain for riscv. you can download it from https://github.com/xpack-dev-tools/riscv-none-elf-gcc-xpack/. The lastest version is '12.2.0', Download and extract it:
+[xpack-dev-tools](https://github.com/xpack-dev-tools/riscv-none-elf-gcc-xpack/) provde a prebuilt toolchain for riscv. you can download it from https://github.com/xpack-dev-tools/riscv-none-elf-gcc-xpack/. The lastest version is '14.2.0', Download and extract it:
 
 ```
 sudo mkdir -p /opt/xpack-riscv-toolchain
-sudo tar xf xpack-riscv-none-elf-gcc-12.2.0-3-linux-x64.tar.gz -C /opt/xpack-riscv-toolchain --strip-components=1
+sudo tar xf xpack-riscv-none-elf-gcc-14.2.0-2-linux-x64.tar.gz -C /opt/xpack-riscv-toolchain --strip-components=1
 ```
 
 And add `/opt/xpack-riscv-toolchain/bin` to PATH env according to your shell.
@@ -59,7 +59,19 @@ elseif("${TOOLCHAIN_VARIANT}" STREQUAL "gcc")
   set(SYSROOT_TARGET       riscv32-unknown-elf)
   set(TOOLCHAIN_CMAKE gcc.cmake)
 ```
-Note the `riscv32-unknown-elf`, it should change to the triplet of xpack riscv toolchain, aka, change it to `riscv-none-elf`.
+
+And change `riscv32-unknown-elf` to `riscv-none-elf`.
+
+Due to changes of `-march` of gcc version above v12, you should also open`cmake/application.cmake` and find:
+```
+if(NOT RV_ARCH)
+    set(RV_ARCH "rv32imac")
+endif()
+
+```
+
+change `rv32imac` to `rv32imac_zicsr_zifencei`.
+
 
 ## Setup some env variables:
 
